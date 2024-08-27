@@ -16,7 +16,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     @Override
     public UserLoginResponse loginUser(UserLoginRequest dto) {
-        User user = userMapper.findUserByLogin(dto.getId(), dto.getPassword());
+        String hashedPassword = HashUtil.hashPassword(dto.getPassword());
+        User user = userMapper.findUserByLogin(dto.getId(), hashedPassword);
         return UserLoginResponse.of(user.getUserId(), user.getName(),
                 user.getUserCi());
     }
@@ -24,7 +25,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUpUser(UserSignUpRequest dto) {
         String userCi = HashUtil.hashResidentNumber(dto.getResidentNumber());
-        userMapper.signUp(dto.getId(), dto.getPassword(), dto.getName(),
+        String hashedPassword = HashUtil.hashPassword(dto.getPassword());
+        userMapper.signUp(dto.getId(), hashedPassword, dto.getName(),
                 dto.getResidentNumber(), dto.getPhoneNumber(), dto.getEmail(),dto.getZipCode(),dto.getAddress(),userCi);
     }
 
