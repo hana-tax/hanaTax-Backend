@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.domain.user.mapper.UserMapper">
+    <select id="findUserByLogin" resultType="com.example.demo.domain.user.entity.User">
+        SELECT userid AS userId, name, userci AS userCi
+        FROM users
+        WHERE id = #{id} AND password = #{password}
+    </select>
+
+    <insert id="signUp">
+        INSERT INTO USERS (
+            userid, id, password, name, residentNumber, phoneNumber, email, zipCode,
+            address, joinDate, userState, userCi
+        ) VALUES (
+                    'USER_ID' || LPAD(USER_ID_SEQ.NEXTVAL, 4, '0'),#{id}, #{password}, #{name}, #{residentNumber}, #{phoneNumber}, #{email}, #{zipCode},
+                     #{address}, SYSDATE,
+                     'US01', -- 정상이면 US01
+                     #{userCi}  -- 주민번호 해시화 값
+                 )
+    </insert>
+</mapper>

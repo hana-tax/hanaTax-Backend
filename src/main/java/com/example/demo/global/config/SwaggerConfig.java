@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Hana Banking",
+                title = "Hana Tax",
                 version = "v1.0.0",
                 description = "This is a hana API documentation"
         )
