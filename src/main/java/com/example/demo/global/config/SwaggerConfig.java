@@ -12,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
                 description = "This is a hana API documentation"
         )
 )
+
 public class SwaggerConfig {
 }

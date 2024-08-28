@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.service;
 
+import com.example.demo.domain.user.dto.UserIdcheckRequest;
 import com.example.demo.domain.user.dto.UserLoginRequest;
 import com.example.demo.domain.user.dto.UserLoginResponse;
 import com.example.demo.domain.user.dto.UserSignUpRequest;
@@ -30,4 +31,9 @@ public class UserServiceImpl implements UserService {
                 dto.getResidentNumber(), dto.getPhoneNumber(), dto.getEmail(),dto.getZipCode(),dto.getAddress(),userCi);
     }
 
+    @Override
+    public boolean idExist(UserIdcheckRequest dto) {
+        int count = userMapper.countById(dto.getId());
+        return count > 0;
+    }
 }

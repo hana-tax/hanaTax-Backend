@@ -4,6 +4,7 @@ import com.example.demo.domain.user.entity.User;
 import com.example.demo.global.util.HashUtil;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface UserMapper {
@@ -18,4 +19,8 @@ public interface UserMapper {
                 @Param("zipCode") int zipCode,
                 @Param("address") String address,
                 @Param("userCi") String userCi);
+
+    @Select("SELECT COUNT(*) FROM users WHERE id = #{id}")
+    int countById(String id);
+
 }

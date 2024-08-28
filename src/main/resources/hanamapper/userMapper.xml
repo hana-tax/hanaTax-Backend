@@ -19,4 +19,10 @@
                      #{userCi}  -- 주민번호 해시화 값
                  )
     </insert>
+
+    <select id="idCheck" resultType="com.example.demo.domain.user.entity.User">
+        SELECT userid AS userId, name, userci AS userCi
+        FROM users
+        WHERE id = #{id} AND password = #{password}
+    </select>
 </mapper>
