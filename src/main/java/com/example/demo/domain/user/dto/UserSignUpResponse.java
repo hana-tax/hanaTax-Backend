@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserSignUpResponse {
-    private String userId;
+    private String id;
     private String name;
     private String userCi;
 
-    public static UserSignUpResponse of(String userId, String name, String userCi) {
+    public static UserSignUpResponse of(String id, String name, String userCi) {
         return UserSignUpResponse.builder()
-                .userId(userId)
+                .id(id)
                 .name(name)
                 .userCi(userCi)
                 .build();

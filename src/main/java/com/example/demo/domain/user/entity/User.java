@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class User {
-    private String UserId;
     private int myData;
     private String id;
     private String password;

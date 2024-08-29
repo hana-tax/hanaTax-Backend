@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/idcheck")
+    @PostMapping("/idcheck")
     public ResponseEntity<UserIdcheckResponse> checkId(
           @Valid @RequestBody UserIdcheckRequest dto) {
 

@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     public UserLoginResponse loginUser(UserLoginRequest dto) {
         String hashedPassword = HashUtil.hashPassword(dto.getPassword());
         User user = userMapper.findUserByLogin(dto.getId(), hashedPassword);
-        return UserLoginResponse.of(user.getUserId(), user.getName(),
+        return UserLoginResponse.of(user.getId(), user.getName(),
                 user.getUserCi());
     }
 
