@@ -1,5 +1,6 @@
 package com.example.demo.domain.product.deposit.service;
 
+import com.example.demo.domain.product.deposit.dto.DepositProductDetailResponse;
 import com.example.demo.domain.product.deposit.dto.DepositProductListResponse;
 import com.example.demo.domain.product.deposit.mapper.DepositProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +16,9 @@ public class DepositProductServiceImpl implements DepositProductService{
     @Override
     public List<DepositProductListResponse> getFinancialProductList() {
         return depositProductMapper.getDepositProductList();
+    }
+    @Override
+    public DepositProductDetailResponse getDepositProductDetail(Long id) {
+        return depositProductMapper.getDepositProductDetail(id);
     }
 }

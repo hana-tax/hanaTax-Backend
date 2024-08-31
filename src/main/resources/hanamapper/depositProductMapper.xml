@@ -24,4 +24,25 @@
         FROM
             deposit_product
     </select>
+    <select id="getDepositProductDetail" resultType="com.example.demo.domain.product.deposit.dto.DepositProductDetailResponse">
+        SELECT  depositId,
+                depositType,
+                depositName,
+                minInterestRate,
+                maxInterestRate,
+                minJoinAmount,
+                maxJoinAmount,
+                minPeriod,
+                maxPeriod,
+                features,
+                notice,
+                terms,
+                description,
+                target,
+                depositSort,
+                taxBenefits,
+                savingType
+        FROM deposit_product
+        WHERE depositId = #{id}
+    </select>
 </mapper>
