@@ -3,6 +3,7 @@ package com.example.demo.domain.user.controller;
 import com.example.demo.domain.user.dto.*;
 import com.example.demo.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest dto) {
-        return ResponseEntity.ok(userService.loginUser(dto));
+    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest dto, HttpSession session) {
+        UserLoginResponse response = userService.loginUser(dto);
+        // 로그인 성공 시 세션에 사용자 정보 저장
+        session.setAttribute("userId", response.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession session) {
+        // 세션 무효화
+        session.invalidate();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
