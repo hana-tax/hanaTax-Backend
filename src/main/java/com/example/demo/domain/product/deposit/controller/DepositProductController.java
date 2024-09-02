@@ -1,16 +1,18 @@
 package com.example.demo.domain.product.deposit.controller;
 
+import com.example.demo.domain.product.deposit.dto.DepositProductCreateRequest;
 import com.example.demo.domain.product.deposit.dto.DepositProductDetailResponse;
 import com.example.demo.domain.product.deposit.dto.DepositProductListResponse;
 import com.example.demo.domain.product.deposit.service.DepositProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Tag(name="DepositProduct")
@@ -32,6 +34,19 @@ public class DepositProductController {
             return ResponseEntity.ok(productDetail);
         } else {
             return ResponseEntity.notFound().build(); // 상품이 없을 경우 404 반환
+        }
+    }
+    @PostMapping("/add")
+    public ResponseEntity<Void> addDepositProduct(
+            @RequestParam("termsFile") MultipartFile termsFile,
+            @RequestParam("descriptionFile") MultipartFile descriptionFile,
+            @ModelAttribute DepositProductCreateRequest request) {
+
+        boolean isCreated = depositProductService.addDepositProduct(request, termsFile, descriptionFile);
+        if (isCreated) {
+            return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request
         }
     }
 }

@@ -45,4 +45,45 @@
         FROM deposit_product
         WHERE depositId = #{id}
     </select>
+
+    <insert id="insertDepositProduct" parameterType="com.example.demo.domain.product.deposit.dto.DepositProductCreateRequest">
+        INSERT INTO deposit_products (
+            DEPOSITID,
+            DEPOSITTYPE,
+            DEPOSITNAME,
+            MININTERESTRATE,
+            MAXINTERESTRATE,
+            MINJOINAMOUNT,
+            MAXJOINAMOUNT,
+            MINPERIOD,
+            MAXPERIOD,
+            FEATURES,
+            NOTICE,
+            TERMS,
+            DESCRIPTION,
+            TARGET,
+            DEPOSITSORT,
+            TAXBENEFITS,
+            SAVINGTYPE
+        ) VALUES (
+                     #{depositId},
+                     #{depositType},
+                     #{depositName},
+                     #{minInterestRate},
+                     #{maxInterestRate},
+                     #{minJoinAmount},
+                     #{maxJoinAmount},
+                     #{minPeriod},
+                     #{maxPeriod},
+                     #{features},
+                     #{notice},
+                     #{terms, jdbcType=BLOB, javaType=byte[]},
+                     #{description, jdbcType=BLOB, javaType=byte[]},
+                     #{target},
+                     #{depositSort},
+                     #{taxBenefits},
+                     #{savingType}
+                 )
+    </insert>
+
 </mapper>
