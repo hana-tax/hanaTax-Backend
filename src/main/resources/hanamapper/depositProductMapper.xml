@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.domain.product.deposit.mapper.DepositProductMapper">
+
     <select id="getDepositProductList" resultType="com.example.demo.domain.product.deposit.dto.DepositProductListResponse">
         SELECT
             depositId,
             depositType,
-             depositName,
+            depositName,
             minInterestRate,
             maxInterestRate,
-             minJoinAmount,
+            minJoinAmount,
             maxJoinAmount,
-             minPeriod,
-           maxPeriod,
+            minPeriod,
+            maxPeriod,
             features,
             notice,
             terms,
@@ -24,65 +25,79 @@
         FROM
             deposit_product
     </select>
+
     <select id="getDepositProductDetail" resultType="com.example.demo.domain.product.deposit.dto.DepositProductDetailResponse">
-        SELECT  depositId,
-                depositType,
-                depositName,
-                minInterestRate,
-                maxInterestRate,
-                minJoinAmount,
-                maxJoinAmount,
-                minPeriod,
-                maxPeriod,
-                features,
-                notice,
-                terms,
-                description,
-                target,
-                depositSort,
-                taxBenefits,
-                savingType
-        FROM deposit_product
-        WHERE depositId = #{id}
+        SELECT
+            depositId,
+            depositType,
+            depositName,
+            minInterestRate,
+            maxInterestRate,
+            minJoinAmount,
+            maxJoinAmount,
+            minPeriod,
+            maxPeriod,
+            features,
+            notice,
+            terms,
+            description,
+            target,
+            depositSort,
+            taxBenefits,
+            savingType
+        FROM
+            deposit_product
+        WHERE
+            depositId = #{id}
     </select>
 
-    <insert id="insertDepositProduct" parameterType="com.example.demo.domain.product.deposit.dto.DepositProductCreateRequest">
-        INSERT INTO deposit_products (
-            DEPOSITID,
-            DEPOSITTYPE,
-            DEPOSITNAME,
-            MININTERESTRATE,
-            MAXINTERESTRATE,
-            MINJOINAMOUNT,
-            MAXJOINAMOUNT,
-            MINPERIOD,
-            MAXPERIOD,
-            FEATURES,
-            NOTICE,
-            TERMS,
-            DESCRIPTION,
-            TARGET,
-            DEPOSITSORT,
-            TAXBENEFITS,
-            SAVINGTYPE
+    <insert id="signUpForDepositAccount" parameterType="com.example.demo.domain.product.deposit.dto.DepositAccountDto">
+        INSERT INTO DEPOSIT_ACCOUNT (
+            depositAccountId,
+            accountPasswd,
+            accountStatus,
+            balance,
+            createDate,
+            expirationDate,
+            depositId,
+            id,
+            accountType
         ) VALUES (
+                     #{depositAccountId},
+                     #{accountPasswd},
+                     #{accountStatus},
+                     #{balance},
+                     #{createDate},
+                     #{expirationDate},
                      #{depositId},
-                     #{depositType},
-                     #{depositName},
-                     #{minInterestRate},
-                     #{maxInterestRate},
-                     #{minJoinAmount},
-                     #{maxJoinAmount},
-                     #{minPeriod},
-                     #{maxPeriod},
-                     #{features},
-                     #{notice},
-                     #{terms, jdbcType=BLOB, javaType=byte[]},
-                     #{description, jdbcType=BLOB, javaType=byte[]},
-                     #{target},
-                     #{depositSort},
-                     #{taxBenefits},
-                     #{savingType}
+                     #{id},
+                     #{accountType}
+                 )
+    </insert>
+
+    <insert id="insertJoinHistory" parameterType="com.example.demo.domain.product.deposit.dto.JoinHistoryDto">
+        INSERT INTO join_history (
+            subscribeId,
+            accountType,
+            accountNumber,
+            joinAccount,
+            joinDate,
+            expirationDate,
+            interest,
+            interestMethod,
+            joinStatus,
+            id
+        ) VALUES (
+                     #{subscribeId},
+                     #{accountType},
+                     #{accountNumber},
+                     #{joinAccount},
+                     #{joinDate},
+                     #{expirationDate},
+                     #{interest},
+                     #{interestMethod},
+                     #{joinStatus},
+                     #{id}
                  )
     </insert>
 

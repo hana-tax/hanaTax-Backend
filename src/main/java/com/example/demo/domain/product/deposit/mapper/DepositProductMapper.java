@@ -1,12 +1,13 @@
 package com.example.demo.domain.product.deposit.mapper;
 
-import com.example.demo.domain.product.deposit.dto.DepositProductCreateRequest;
+import com.example.demo.domain.product.deposit.dto.DepositAccountDto;
 import com.example.demo.domain.product.deposit.dto.DepositProductDetailResponse;
 import com.example.demo.domain.product.deposit.dto.DepositProductListResponse;
-import org.apache.ibatis.annotations.Insert;
+import com.example.demo.domain.product.deposit.dto.JoinHistoryDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
-import org.springframework.web.multipart.MultipartFile;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -14,7 +15,6 @@ import java.util.List;
 public interface DepositProductMapper {
     List<DepositProductListResponse> getDepositProductList();
     DepositProductDetailResponse getDepositProductDetail(Long id);
-
-    @Options(useGeneratedKeys = true, keyProperty = "depositId")
-    int insertDepositProduct(DepositProductCreateRequest request);
+    void signUpForDepositAccount(DepositAccountDto depositAccount);
+    void insertJoinHistory(JoinHistoryDto joinHistory);
 }
