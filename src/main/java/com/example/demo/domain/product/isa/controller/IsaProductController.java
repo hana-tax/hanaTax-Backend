@@ -1,15 +1,13 @@
 package com.example.demo.domain.product.isa.controller;
 
-import com.example.demo.domain.product.deposit.dto.DepositProductListResponse;
-import com.example.demo.domain.product.deposit.service.DepositProductService;
+
 import com.example.demo.domain.product.isa.dto.IsaPortfolioListResponse;
+import com.example.demo.domain.product.isa.dto.IsaProductSignUpRequest;
 import com.example.demo.domain.product.isa.service.IsaProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,7 +17,11 @@ import java.util.List;
 @RequestMapping("/api/product/isa")
 public class IsaProductController {
     private final IsaProductService isaProductService;
-
+    @PostMapping("/signup")
+    public String signUp(@RequestBody IsaProductSignUpRequest request) {
+        isaProductService.createIsaAccount(request.getIsaAccountDto(), request.getJoinHistoryDTO());
+        return "가입이 완료되었습니다.";
+    }
     @GetMapping("/portfolioList")
     public ResponseEntity<List<IsaPortfolioListResponse>> getPortfolio() {
         return ResponseEntity.ok(isaProductService.getPortfolio());

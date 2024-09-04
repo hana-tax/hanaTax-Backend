@@ -11,6 +11,59 @@
             portfolioId, portfolioName, minAccount, commission, description
         FROM
             portfolio
+        ORDER BY portfolioId
     </select>
+
+    <insert id="signUpForIsaAccount" parameterType="com.example.demo.domain.product.isa.dto.IsaAccountDto">
+        INSERT INTO isa_account (
+            isa_accountNo,
+            accountPasswd,
+            createDate,
+            expirationDate,
+            accountStatus,
+            sum,
+            balance,
+            portfolioId,
+            id,
+            accountType
+        ) VALUES (
+                     #{isa_accountNo},
+                     #{accountPasswd},
+                     #{createDate},
+                     #{expirationDate},
+                     #{accountStatus},
+                     #{sum},
+                     #{balance},
+                     #{portfolioId},
+                     #{id},
+                     #{accountType}
+                 )
+    </insert>
+
+    <insert id="insertJoinHistory" parameterType="com.example.demo.domain.product.deposit.dto.JoinHistoryDto">
+        INSERT INTO join_history (
+            subscribeId,
+            accountType,
+            accountNumber,
+            joinAccount,
+            joinDate,
+            expirationDate,
+            interest,
+            interestMethod,
+            joinStatus,
+            id
+        ) VALUES (
+                     subscribe_id_seq.NEXTVAL,
+                     #{accountType},
+                     #{accountNumber},
+                     #{joinAccount},
+                     #{joinDate},
+                     #{expirationDate},
+                     #{interest},
+                     #{interestMethod},
+                     #{joinStatus},
+                     #{id}
+                 )
+    </insert>
 
 </mapper>
