@@ -88,7 +88,7 @@
             joinStatus,
             id
         ) VALUES (
-                     #{subscribeId},
+                    subscribe_id_seq.NEXTVAL,
                      #{accountType},
                      #{accountNumber},
                      #{joinAccount},
