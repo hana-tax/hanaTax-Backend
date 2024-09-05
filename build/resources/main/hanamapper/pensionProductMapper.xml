@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.domain.product.pension.mapper.PensionProductMapper">
+
+    <insert id="signUpForPensionAccount" parameterType="com.example.demo.domain.product.pension.dto.PensionAccountDto">
+        INSERT INTO fund_account (
+            fundAccountNo,
+            accountPasswd,
+            createDate,
+            expirationDate,
+            accountStatus,
+            sum,
+            balance,
+            period,
+            paymentLimit,
+            connectAccountId,
+            id,
+            accountType,
+            pensionAge,
+            pensionCycle
+        ) VALUES (
+                     #{fundAccountNo},
+                     #{accountPasswd},
+                     #{createDate},
+                     #{expirationDate},
+                     #{accountStatus},
+                     #{sum},
+                     #{balance},
+                     #{period},
+                     #{paymentLimit},
+                     #{connectAccountId},
+                     #{id},
+                     #{accountType},
+                     #{pensionAge},
+                     #{pensionCycle}
+                 )
+    </insert>
+
+    <insert id="insertJoinHistory" parameterType="com.example.demo.domain.product.deposit.dto.JoinHistoryDto">
+        INSERT INTO join_history (
+            subscribeId,
+            accountType,
+            accountNumber,
+            joinAccount,
+            joinDate,
+            expirationDate,
+            interest,
+            interestMethod,
+            joinStatus,
+            id
+        ) VALUES (
+                     subscribe_id_seq.NEXTVAL,
+                     #{accountType},
+                     #{accountNumber},
+                     #{joinAccount},
+                     #{joinDate},
+                     #{expirationDate},
+                     #{interest},
+                     #{interestMethod},
+                     #{joinStatus},
+                     #{id}
+                 )
+    </insert>
+
+</mapper>
