@@ -19,12 +19,12 @@ public class MyDataService {
         this.userCiMapper = userCiMapper;
     }
 
-    public List<Object> enrollUserInMyData(MyDataEnrollmentRequest request) {
+    public List<Object> enrollUserInMyData(String accessToken, MyDataEnrollmentRequest request) {
         // DB에서 사용자 CI 가져오기
         String ci = userCiMapper.getUserCi(request.getUserId());
         request.setCi(ci);  // 요청에 CI 정보 설정
 
         // 마이데이터 서버로 사용자 등록 요청 및 금융사 데이터 가져오기
-        return myDataRestClient.enrollUserInMyData(request);
+        return myDataRestClient.enrollUserInMyData(accessToken,request);
     }
 }

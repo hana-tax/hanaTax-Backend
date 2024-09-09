@@ -22,9 +22,9 @@ public class MyDataController {
 
     // 사용자 데이터를 마이데이터 서버로 보내고, 금융사 데이터를 받아오는 API
     @PostMapping("/enroll")
-    public ResponseEntity<List<Object>> enrollUserInMyData(@RequestBody MyDataEnrollmentRequest request) {
+    public ResponseEntity<List<Object>> enrollUserInMyData( @RequestHeader("Authorization") String accessToken,@RequestBody MyDataEnrollmentRequest request) {
         // MyDataService에서 처리된 데이터를 받음
-        List<Object> financialAssets = myDataService.enrollUserInMyData(request);
+        List<Object> financialAssets = myDataService.enrollUserInMyData(accessToken, request);
 
         if (financialAssets != null && !financialAssets.isEmpty()) {
             return ResponseEntity.ok(financialAssets);
