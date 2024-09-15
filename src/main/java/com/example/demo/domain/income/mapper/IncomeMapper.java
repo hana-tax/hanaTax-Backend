@@ -9,8 +9,13 @@ import java.util.List;
 
 @Mapper
 public interface IncomeMapper {
-    @Select("SELECT sum,isOverTax " +
+    @Select("SELECT sum,isOverTax,financialIncomeId " +
             "FROM financial_income " +
             "WHERE ID = #{id} ")
     IncomeIsOverTaxResponse getIncomeListById(String id);
+
+    @Select("SELECT incomeType,accountNumber,institutionName,incomeAccount,incomeTax,localTax,incomeDate " +
+            "FROM income_detail " +
+            "WHERE financialIncomeId = #{financialIncomeId} ")
+    List<IncomeListResponse> getIncomeAllListById(int financialIncomeId);
 }

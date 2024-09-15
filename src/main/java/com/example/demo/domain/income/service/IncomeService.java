@@ -21,4 +21,8 @@ public class IncomeService {
 public IncomeIsOverTaxResponse getIncomeList(IncomeIsOverTaxRequest dto) {
         return incomeMapper.getIncomeListById(dto.getId());
 }
+
+public List<IncomeListResponse> getAllIncomeList(IncomeListRequest dto) {
+        return incomeMapper.getIncomeAllListById(dto.getFinancialIncomeId());
+}
 }

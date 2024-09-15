@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class IncomeIsOverTaxResponse {
     private int sum;
     private String isOverTax;
+    private int financialIncomeId;
 }

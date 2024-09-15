@@ -26,4 +26,8 @@ public class IncomeController {
     public ResponseEntity<IncomeIsOverTaxResponse> getIncomeList(@Valid @RequestBody IncomeIsOverTaxRequest dto) throws Exception {
         return ResponseEntity.ok(incomeService.getIncomeList(dto));
     }
+    @PostMapping("/incomeList")
+    public ResponseEntity<List<IncomeListResponse>> getAllIncomeList(@Valid @RequestBody IncomeListRequest dto) throws Exception {
+        return ResponseEntity.ok(incomeService.getAllIncomeList(dto));
+    }
 }
