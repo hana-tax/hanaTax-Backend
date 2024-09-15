@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
                 .csrf().disable() // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/mydata/auth/**").permitAll() // 인증 없이 접근 가능 경로
+                        .requestMatchers("/api/mydata/auth/**","/api/account/**", "/api/investAnalysis/**","/api/product/**","/api/user/**","/api/swagger-config","/swagger-ui/**","/**").permitAll() // 인증 없이 접근 가능 경로
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 이전에 추가
