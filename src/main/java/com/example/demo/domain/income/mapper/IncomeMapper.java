@@ -11,7 +11,7 @@ import java.util.List;
 public interface IncomeMapper {
     @Select("SELECT sum,isOverTax,financialIncomeId " +
             "FROM financial_income " +
-            "WHERE ID = #{id} ")
+            "WHERE ID = #{id} and financialIncomeId = 7")
     IncomeIsOverTaxResponse getIncomeListById(String id);
 
     @Select("SELECT incomeType,accountNumber,institutionName,incomeAccount,incomeTax,localTax,incomeDate " +

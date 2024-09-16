@@ -33,17 +33,22 @@ public class MyDataService {
 
     public List<Object> enrollUserInMyData(String accessToken, MyDataEnrollmentRequest request) {
         String ci = userCiMapper.getUserCi(request.getUserId());
-        request.setCi(ci);  // 사용자 CI 설정
+        if (ci != null) {
+            request.setCi(ci);  // 사용자 CI 설정
+        }
 
         List<Object> financialAssets = myDataRestClient.enrollUserInMyData(accessToken, request);
         if (financialAssets != null && !financialAssets.isEmpty()) {
             saveFinancialData(financialAssets, request.getUserId());
         }
-
+        System.out.println(financialAssets);
         return financialAssets;
     }
 
     private Date parseDate(String dateStr) {
+        if (dateStr == null) {
+            return null;
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return format.parse(dateStr);
@@ -54,75 +59,140 @@ public class MyDataService {
     }
 
     private String formatDateToDatabaseFormat(Date date) {
+        if (date == null) {
+            return null;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
 
-    private IncomeDetailDto extractIncomeFromAsset(Map<String, Object> asset, int financialIncomeId) {
-        String accountNumber = (String) asset.get("accountNo");
-        int institutionCode = asset.containsKey("bankCode")
-                ? (Integer) asset.get("bankCode")
-                : (Integer) asset.get("investCode");
-        String createdAtStr = (String) asset.get("createdAt");
-        Date incomeDate = parseDate(createdAtStr);
-        String formattedIncomeDate = formatDateToDatabaseFormat(incomeDate);
-
-        double interestIncome = (Double) asset.getOrDefault("interestIncome", 0.0);
-        double dividendIncome = (Double) asset.getOrDefault("dividendIncome", 0.0);
-        double incomeTax = 0.0;
-        int incomeTypeCode = 0;
-
-        if (interestIncome > 0) {
-            incomeTypeCode = 34;  // 이자소득 코드
-            incomeTax = interestIncome;
-        } else if (dividendIncome > 0) {
-            incomeTypeCode = 35;  // 배당소득 코드
-            incomeTax = dividendIncome;
-        }
-
-        double localTax = incomeTax * 0.1;  // 지방세는 소득세의 10%
-
-        return IncomeDetailDto.builder()
-                .financialIncomeId(financialIncomeId)
-                .incomeType(incomeTypeCode)
-                .accountNumber(accountNumber)
-                .institutionName(institutionCode)  // 기관 코드로 저장
-                .incomeAccount(incomeTax)
-                .incomeTax(incomeTax)
-                .localTax(localTax)
-                .incomeDate(formattedIncomeDate)
-                .build();
-    }
-
     private void saveFinancialData(List<Object> financialAssets, String userId) {
-        double totalIncome = 0;
-
-        Integer financialIncomeId = financialIncomeMapper.getFinancialIncomeId(userId);
+        double[] totalIncomes = new double[7]; // 2018~2024년의 총 소득 저장
 
         for (Object asset : financialAssets) {
-            Map<String, Object> assetMap = (Map<String, Object>) asset;
+            if (asset instanceof Map) {
+                Map<String, Object> assetMap = (Map<String, Object>) asset;
 
-            IncomeDetailDto incomeDetail = extractIncomeFromAsset(assetMap, financialIncomeId);
-            totalIncome += incomeDetail.getIncomeTax() + incomeDetail.getLocalTax();
+                // 이자 소득 처리
+                IncomeDetailDto interestDetail = extractInterestIncome(assetMap);
+                if (interestDetail != null) {
+                    int year = Integer.parseInt(interestDetail.getIncomeDate().substring(0, 4)); // 연도 추출
+                    Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
 
-            incomeDetailMapper.insertIncomeDetail(
-                    incomeDetail.getIncomeId(),
-                    incomeDetail.getFinancialIncomeId(),
-                    incomeDetail.getIncomeType(),
-                    incomeDetail.getAccountNumber(),
-                    incomeDetail.getInstitutionName(),
-                    incomeDetail.getIncomeAccount(),
-                    incomeDetail.getIncomeTax(),
-                    incomeDetail.getLocalTax(),
-                    incomeDetail.getIncomeDate()
-            );
+                    // financialIncomeId가 존재하는 경우에만 업데이트 및 삽입
+                    if (financialIncomeId != null) {
+                        // 소득 합산
+                        totalIncomes[year - 2018] += interestDetail.getIncomeAccount(); // 해당 연도의 소득 합산
+
+                        // income_detail에 추가
+                        interestDetail.setFinancialIncomeId(financialIncomeId); // ID 설정
+                        incomeDetailMapper.insertIncomeDetail(interestDetail);
+                    }
+                }
+
+                // 배당 소득 처리
+                IncomeDetailDto dividendDetail = extractDividendIncome(assetMap);
+                if (dividendDetail != null) {
+                    int year = Integer.parseInt(dividendDetail.getIncomeDate().substring(0, 4)); // 연도 추출
+                    Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
+
+                    if (financialIncomeId != null) {
+                        // 소득 합산
+                        totalIncomes[year - 2018] += dividendDetail.getIncomeAccount();
+
+                        dividendDetail.setFinancialIncomeId(financialIncomeId); // ID 설정
+                        incomeDetailMapper.insertIncomeDetail(dividendDetail);
+                    }
+                }
+            }
         }
 
-        if (financialIncomeId != null) {
-            financialIncomeMapper.updateFinancialIncome(financialIncomeId, totalIncome, isOverTax(totalIncome));
-        } else {
-            financialIncomeMapper.insertFinancialIncome(totalIncome, isOverTax(totalIncome), userId);
+        for (int i = 0; i < totalIncomes.length; i++) {
+            if (totalIncomes[i] > 0) { // 소득이 0보다 큰 경우에만 업데이트
+                int year = 2018 + i;
+                Integer financialIncomeId = getFinancialIncomeIdByYear(year);
+                if (financialIncomeId != null) {
+                    financialIncomeMapper.updateFinancialIncome(financialIncomeId, totalIncomes[i], isOverTax(totalIncomes[i]));
+                }
+            }
         }
+    }
+
+    private Integer getFinancialIncomeIdByYear(int year) {
+        switch (year) {
+            case 2018:
+                return 1;
+            case 2019:
+                return 2;
+            case 2020:
+                return 3;
+            case 2021:
+                return 4;
+            case 2022:
+                return 5;
+            case 2023:
+                return 6;
+            case 2024:
+                return 7;
+            default:
+                return null; // 해당 연도에 대한 ID가 없으면 null 반환
+        }
+    }
+
+    private IncomeDetailDto extractInterestIncome(Map<String, Object> asset) {
+        String accountNumber = (String) asset.get("accountNo");
+        Integer institutionCode = (Integer) asset.get("bankCode");
+
+        String interestDateStr = (String) asset.get("interestDate");
+        Date interestDate = parseDate(interestDateStr);
+
+        // 날짜가 유효하고 이자 소득이 0보다 큰 경우
+        Double interestIncome = (Double) asset.get("interestAmount");
+        if (interestIncome != null && interestIncome > 0) {
+            String formattedIncomeDate = formatDateToDatabaseFormat(interestDate);
+            double incomeTax = Math.floor(interestIncome * 0.14); // 소득세 절삭
+            double localTax = Math.floor(incomeTax * 0.014); // 지방세 절삭
+
+            return IncomeDetailDto.builder()
+                    .financialIncomeId(null) // financialIncomeId는 null로 설정
+                    .incomeType(34)  // 이자소득 코드
+                    .accountNumber(accountNumber)
+                    .institutionName(institutionCode)
+                    .incomeAccount(interestIncome)
+                    .incomeTax(incomeTax)
+                    .localTax(localTax)
+                    .incomeDate(formattedIncomeDate)
+                    .build();
+        }
+        return null;  // 이자 소득이 없으면 null 반환
+    }
+
+    private IncomeDetailDto extractDividendIncome(Map<String, Object> asset) {
+        String accountNumber = (String) asset.get("accountNo");
+        Integer institutionCode = (Integer) asset.getOrDefault("bankCode", asset.get("investCode"));
+
+        String dividendDateStr = (String) asset.get("dividendDate");
+        Date dividendDate = parseDate(dividendDateStr);
+
+        // 날짜가 유효하고 배당 소득이 0보다 큰 경우
+        Double dividendIncome = (Double) asset.get("dividendAmount");
+        if (dividendIncome != null && dividendIncome > 0) {
+            String formattedIncomeDate = formatDateToDatabaseFormat(dividendDate);
+            double incomeTax = Math.floor(dividendIncome * 0.14); // 소득세 절삭
+            double localTax = Math.floor(incomeTax * 0.014); // 지방세 절삭
+
+            return IncomeDetailDto.builder()
+                    .financialIncomeId(null) // financialIncomeId는 null로 설정
+                    .incomeType(35)  // 배당소득 코드
+                    .accountNumber(accountNumber)
+                    .institutionName(institutionCode)
+                    .incomeAccount(dividendIncome)
+                    .incomeTax(incomeTax)
+                    .localTax(localTax)
+                    .incomeDate(formattedIncomeDate)
+                    .build();
+        }
+        return null;  // 배당 소득이 없으면 null 반환
     }
 
     private String isOverTax(double totalIncome) {

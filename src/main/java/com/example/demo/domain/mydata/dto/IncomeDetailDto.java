@@ -8,8 +8,7 @@ import lombok.*;
 @Builder
 @Setter
 public class IncomeDetailDto {
-    private int incomeId;
-    private int financialIncomeId;
+    private Integer financialIncomeId;
     private int incomeType;
     private String accountNumber;
     private int institutionName;

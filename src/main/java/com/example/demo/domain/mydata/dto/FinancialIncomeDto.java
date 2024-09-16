@@ -15,4 +15,5 @@ public class FinancialIncomeDto {
     private Date inquiryDate;
     private String isOverTax;
     private String userId;
+    private String year;
 }
