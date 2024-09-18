@@ -29,4 +29,6 @@ public interface UserMapper {
             "WHERE id = #{id}")
     void updateAlertTax(@Param("id") String id, @Param("email") int email, @Param("sms") int sms);
 
+    @Select("SELECT * FROM USERS WHERE id = #{id}")
+    User getUserById(String id);
 }

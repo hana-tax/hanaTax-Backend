@@ -2,6 +2,7 @@ package com.example.demo.domain.income.mapper;
 
 import com.example.demo.domain.income.dto.IncomeIsOverTaxResponse;
 import com.example.demo.domain.income.dto.IncomeListResponse;
+import com.example.demo.domain.mydata.dto.FinancialIncomeDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -18,4 +19,5 @@ public interface IncomeMapper {
             "FROM income_detail " +
             "WHERE financialIncomeId = #{financialIncomeId} ")
     List<IncomeListResponse> getIncomeAllListById(int financialIncomeId);
+
 }

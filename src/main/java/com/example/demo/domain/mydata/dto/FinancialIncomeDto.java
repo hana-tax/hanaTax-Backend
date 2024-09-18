@@ -9,11 +9,12 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Setter
+@ToString
 public class FinancialIncomeDto {
     private int financialIncomeId;
     private double sum;
     private Date inquiryDate;
     private String isOverTax;
-    private String userId;
+    private String id;
     private String year;
 }
