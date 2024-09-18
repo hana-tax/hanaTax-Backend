@@ -7,6 +7,7 @@ import com.example.demo.domain.mydata.mapper.FinancialIncomeMapper;
 import com.example.demo.domain.mydata.mapper.IncomeDetailMapper;
 import com.example.demo.domain.mydata.mapper.UserCiMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -31,6 +32,33 @@ public class MyDataService {
         this.incomeDetailMapper = incomeDetailMapper;
     }
 
+
+    // 매일 아침 9시에 실행되도록 설정
+    @Scheduled(cron = "0 0 9 * * ?")
+    public void fetchFinancialAssetsScheduled() {
+        // 1. 토큰 발급 로직
+        String accessToken = getAccessToken();
+
+        // 2. 사용자 요청 정보 생성 (필요한 데이터를 사용하여 request 생성)
+        MyDataEnrollmentRequest request = new MyDataEnrollmentRequest();
+        request.setUserId("사용자 ID");  // 실제 사용자 ID를 넣어야 함
+
+        // 3. 마이데이터 서버에 요청을 보내서 financialAssets 받기
+        List<Object> financialAssets = enrollUserInMyData(accessToken, request);
+
+        // financialAssets 처리
+        if (financialAssets != null && !financialAssets.isEmpty()) {
+            saveFinancialData(financialAssets, request.getUserId());
+        }
+    }
+
+    // 토큰 발급 로직 (OAuth나 기타 인증 방식을 통해 토큰을 발급받음)
+    private String getAccessToken() {
+        // 토큰 발급 요청 처리 로직을 여기에 작성하세요.
+        // 예를 들어, 인증 서버에 요청하여 발급된 토큰을 반환하도록 구현.
+        return "발급된 토큰 값";
+    }
+
     public List<Object> enrollUserInMyData(String accessToken, MyDataEnrollmentRequest request) {
         String ci = userCiMapper.getUserCi(request.getUserId());
         if (ci != null) {
@@ -44,6 +72,7 @@ public class MyDataService {
         System.out.println(financialAssets);
         return financialAssets;
     }
+
 
     private Date parseDate(String dateStr) {
         if (dateStr == null) {

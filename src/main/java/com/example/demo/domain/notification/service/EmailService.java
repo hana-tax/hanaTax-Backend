@@ -1,4 +1,4 @@
-package com.example.demo.domain.notification;
+package com.example.demo.domain.notification.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

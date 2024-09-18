@@ -1,7 +1,9 @@
-package com.example.demo.domain.notification;
+package com.example.demo.domain.notification.service;
 
 import com.example.demo.domain.mydata.dto.FinancialIncomeDto;
 import com.example.demo.domain.mydata.mapper.FinancialIncomeMapper;
+import com.example.demo.domain.notification.dto.OverTaxAlertDto;
+import com.example.demo.domain.notification.mapper.OverTaxAlertMapper;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.user.mapper.UserMapper;
 import com.example.demo.global.util.ImageUtil;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,9 +27,13 @@ public class NotificationService {
     private EmailService emailService;
 
     @Autowired
-    private SmsService smsService; // SmsService 주입
+    private SmsService smsService;
 
-    @Scheduled(cron = "0 */1 * * * ?") // 매 1분마다 실행
+    @Autowired
+    private OverTaxAlertMapper overTaxAlertMapper;
+
+//        @Scheduled(cron = "0 */1 * * * ?") // 매 1분마다 실행
+    @Scheduled(cron = "0 9 * * * ?") // 매일 오전 9시
     public void sendOverTaxAlerts() throws MessagingException {
         // isOverTax가 'Y'인 financial income 목록 조회
         List<FinancialIncomeDto> financialIncomes = financialIncomeMapper.getOverTaxFinancialIncomes();
@@ -44,13 +51,25 @@ public class NotificationService {
 
                 if (user.isAlertMethodEmail()) {
                     emailService.sendEmail(user.getEmail(), emailSubject, emailText);
+                    insertOverTaxAlert(user.getId(),1); //이메일
                 }
 
                 if (user.isAlertMethodSMS()) {
                     sendSmsAlert(user.getPhoneNumber(), income, formattedSum);
+                    insertOverTaxAlert(user.getId(),2); //sms
                 }
             }
         }
+    }
+
+    private void insertOverTaxAlert(String userId, int alertMethod) {
+        OverTaxAlertDto alert = new OverTaxAlertDto();
+        alert.setAlertMethod(alertMethod);
+        alert.setAlertDate(new Date());
+        alert.setAlertState(66); //66: 전송 완료 (정상)
+        alert.setId(userId);
+
+        overTaxAlertMapper.insertOverTaxAlert(alert);
     }
 
     private String createEmailText(String userName, String formattedSum) {

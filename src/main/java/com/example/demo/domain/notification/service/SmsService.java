@@ -1,4 +1,4 @@
-package com.example.demo.domain.notification;
+package com.example.demo.domain.notification.service;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
