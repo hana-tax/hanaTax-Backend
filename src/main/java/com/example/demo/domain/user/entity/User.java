@@ -24,6 +24,9 @@ public class User {
     private String residentNumber; //주민번호
     @Convert(converter= BooleanToYNConverter.class
     )
-    private boolean isAlertTax; //종합과세 알림 신청 여부
+    private boolean alertMethodEmail; //종합과세 알림 신청 여부(email)
+    @Convert(converter= BooleanToYNConverter.class
+    )
+    private boolean alertMethodSMS; //종합과세 알림 신청 여부(SMS)
     private String userCi;
 }

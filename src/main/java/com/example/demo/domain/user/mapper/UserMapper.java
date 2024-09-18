@@ -24,6 +24,9 @@ public interface UserMapper {
     @Select("SELECT COUNT(*) FROM users WHERE id = #{id}")
     int countById(String id);
 
-    @Update("UPDATE users SET isAlertTax = 'Y' WHERE id = #{id}")
-    void updateAlertTax(String id);
+    @Update("UPDATE users SET alertMethodEmail = CASE WHEN #{email} = 1 THEN 'Y' ELSE alertMethodEmail END, " +
+            "alertMethodSMS = CASE WHEN #{sms} = 1 THEN 'Y' ELSE alertMethodSMS END " +
+            "WHERE id = #{id}")
+    void updateAlertTax(@Param("id") String id, @Param("email") int email, @Param("sms") int sms);
+
 }

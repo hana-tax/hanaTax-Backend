@@ -38,8 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void applyAlertTax(String userId)
-    {
-        userMapper.updateAlertTax(userId);
+    public void updateAlertTax(String id, int email, int sms) {
+        userMapper.updateAlertTax(id, email,sms);
     }
 }

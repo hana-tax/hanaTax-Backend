@@ -11,5 +11,5 @@ public interface UserService {
 
     boolean idExist(UserIdcheckRequest dto);
 
-    void applyAlertTax(String userId);
+    void updateAlertTax(String id,int email, int sms);
 }

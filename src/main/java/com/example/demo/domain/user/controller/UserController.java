@@ -60,7 +60,12 @@ public class UserController {
     }
 
     @PostMapping("/{id}/alert")
-    public void applyAlertTax(@PathVariable String id) {
-        userService.applyAlertTax(id);
+    public ResponseEntity<Void> applyAlertTax(@PathVariable String id, @RequestBody AlertRequest alertRequest) {
+        int emailSelected = alertRequest.getAlertMethods().contains(1) ? 1 : 0; // 이메일 알림
+        int smsSelected = alertRequest.getAlertMethods().contains(2) ? 1 : 0;   // 문자 알림
+
+        userService.updateAlertTax(id, emailSelected, smsSelected);
+
+        return ResponseEntity.ok().build();
     }
 }
