@@ -36,4 +36,10 @@ public class UserServiceImpl implements UserService {
         int count = userMapper.countById(dto.getId());
         return count > 0;
     }
+
+    @Override
+    public void applyAlertTax(String userId)
+    {
+        userMapper.updateAlertTax(userId);
+    }
 }

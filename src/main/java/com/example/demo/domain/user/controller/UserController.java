@@ -58,4 +58,9 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{id}/alert")
+    public void applyAlertTax(@PathVariable String id) {
+        userService.applyAlertTax(id);
+    }
 }

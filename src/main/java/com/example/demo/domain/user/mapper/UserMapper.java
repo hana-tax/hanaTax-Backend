@@ -5,6 +5,7 @@ import com.example.demo.global.util.HashUtil;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
@@ -23,4 +24,6 @@ public interface UserMapper {
     @Select("SELECT COUNT(*) FROM users WHERE id = #{id}")
     int countById(String id);
 
+    @Update("UPDATE users SET isAlertTax = 'Y' WHERE id = #{id}")
+    void updateAlertTax(String id);
 }

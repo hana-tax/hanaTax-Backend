@@ -10,4 +10,6 @@ public interface UserService {
     void signUpUser(UserSignUpRequest dto);
 
     boolean idExist(UserIdcheckRequest dto);
+
+    void applyAlertTax(String userId);
 }
