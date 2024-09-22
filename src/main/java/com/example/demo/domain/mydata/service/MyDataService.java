@@ -3,6 +3,7 @@ package com.example.demo.domain.mydata.service;
 import com.example.demo.domain.mydata.client.MyDataRestClient;
 import com.example.demo.domain.mydata.dto.IncomeDetailDto;
 import com.example.demo.domain.mydata.dto.MyDataEnrollmentRequest;
+import com.example.demo.domain.mydata.dto.MyDataResponseDto;
 import com.example.demo.domain.mydata.mapper.FinancialIncomeMapper;
 import com.example.demo.domain.mydata.mapper.IncomeDetailMapper;
 import com.example.demo.domain.mydata.mapper.UserCiMapper;
@@ -226,5 +227,9 @@ public class MyDataService {
 
     private String isOverTax(double totalIncome) {
         return totalIncome > 20000000 ? "Y" : "N";
+    }
+
+    public MyDataResponseDto getMyDataByUserId(String id) {
+        return userCiMapper.getMyDataByUserId(id);
     }
 }

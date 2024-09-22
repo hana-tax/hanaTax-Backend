@@ -1,5 +1,6 @@
 package com.example.demo.domain.mydata.mapper;
 
+import com.example.demo.domain.mydata.dto.MyDataResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -12,4 +13,10 @@ public interface UserCiMapper {
 
     @Select("SELECT * FROM USERS")
     List<String> getAllUserIds();
+
+    @Select("SELECT m.ci, m.linkedassets " +
+            "FROM users u " +
+            "JOIN myData m ON u.userCi = m.ci " +
+            "WHERE u.id = #{id}")
+    MyDataResponseDto getMyDataByUserId(String id);
 }

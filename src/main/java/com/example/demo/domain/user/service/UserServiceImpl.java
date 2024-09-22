@@ -1,10 +1,8 @@
 package com.example.demo.domain.user.service;
 
-import com.example.demo.domain.user.dto.UserIdcheckRequest;
-import com.example.demo.domain.user.dto.UserLoginRequest;
-import com.example.demo.domain.user.dto.UserLoginResponse;
-import com.example.demo.domain.user.dto.UserSignUpRequest;
+import com.example.demo.domain.user.dto.*;
 import com.example.demo.domain.user.entity.User;
+import com.example.demo.domain.user.mapper.RiskProfileMapper;
 import com.example.demo.domain.user.mapper.UserMapper;
 import com.example.demo.global.util.HashUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final RiskProfileMapper riskProfileMapper;
     private final UserMapper userMapper;
     @Override
     public UserLoginResponse loginUser(UserLoginRequest dto) {
@@ -40,5 +39,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateAlertTax(String id, int email, int sms) {
         userMapper.updateAlertTax(id, email,sms);
+
+    }
+    @Override
+    public UserDto getUserById(String id) {
+        User user = userMapper.getUserById(id);
+        if (user == null) {
+            return null;
+        }
+
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setJoinDate(user.getJoinDate());
+        userDto.setUserState(user.getUserState());
+        userDto.setZipCode(user.getZipCode());
+        userDto.setAddress(user.getAddress());
+        userDto.setUserCi(user.getUserCi());
+        userDto.setResidentNumber(user.getResidentNumber());
+        userDto.setMyDataId(user.getMyDataId());
+        userDto.setAlertMethodSMS(user.isAlertMethodSMS() ? 'Y' : 'N');
+        userDto.setAlertMethodEmail(user.isAlertMethodEmail() ? 'Y' : 'N');
+
+        return userDto;
+    }
+    @Override
+    public RiskProfileDto getLatestRiskProfileById(String id) {
+        return riskProfileMapper.getLatestRiskProfileById(id);
     }
 }

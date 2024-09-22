@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +18,6 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/mydata/auth")
 public class AuthController {
-
-
     private final SecretKey secretKey;
 
     public AuthController() {
@@ -26,6 +25,7 @@ public class AuthController {
     }
     @GetMapping("/authorize")
     public ResponseEntity<String> getAuthCode(@RequestParam String userCi) {
+
         // JWT 토큰 생성
         String jwt = Jwts.builder()
                 .setSubject(userCi)

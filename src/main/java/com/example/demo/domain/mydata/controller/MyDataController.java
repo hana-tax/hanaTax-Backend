@@ -1,7 +1,9 @@
 package com.example.demo.domain.mydata.controller;
 
 import com.example.demo.domain.mydata.dto.MyDataEnrollmentRequest;
+import com.example.demo.domain.mydata.dto.MyDataResponseDto;
 import com.example.demo.domain.mydata.service.MyDataService;
+import com.example.demo.domain.user.dto.IdRequestDto;
 import com.example.demo.global.util.JwtUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +45,15 @@ public class MyDataController {
             return ResponseEntity.status(500).body(null); // 처리 실패 시 500 에러
         }
     }
+
+    @PostMapping("/linked-assets")
+    public ResponseEntity<MyDataResponseDto> getMyDataByUserId(@RequestBody IdRequestDto requestDto) {
+        MyDataResponseDto response = myDataService.getMyDataByUserId(requestDto.getId());
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

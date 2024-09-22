@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class UserController {
         UserLoginResponse response = userService.loginUser(dto);
         // 로그인 성공 시 세션에 사용자 정보 저장
         session.setAttribute("userId", response.getId());
+        System.out.println(response.getId());
         return ResponseEntity.ok(response);
     }
 
@@ -68,4 +70,23 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/getUserById")
+    public ResponseEntity<UserDto> getUserById(@RequestBody IdRequestDto requestDto) {
+        UserDto userDto = userService.getUserById(requestDto.getId());
+
+        if (userDto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PostMapping("/risk-profile")
+    public ResponseEntity<RiskProfileDto> getLatestRiskProfileById(@RequestBody IdRequestDto requestDto) {
+        RiskProfileDto riskProfileDto = userService.getLatestRiskProfileById(requestDto.getId());
+
+        return ResponseEntity.ok(riskProfileDto);
+    }
+
 }

@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class User {
-    private int myData;
     private String id;
     private String password;
     private String name;
@@ -22,6 +21,7 @@ public class User {
     private int zipCode;
     private String address;
     private String residentNumber; //주민번호
+    private int myDataId;
     @Convert(converter= BooleanToYNConverter.class
     )
     private boolean alertMethodEmail; //종합과세 알림 신청 여부(email)
