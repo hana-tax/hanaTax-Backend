@@ -109,14 +109,17 @@ public class MyDataService {
                     int year = Integer.parseInt(interestDetail.getIncomeDate().substring(0, 4)); // 연도 추출
                     Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
 
-                    // financialIncomeId가 존재하는 경우에만 업데이트 및 삽입
                     if (financialIncomeId != null) {
-                        // 소득 합산
-                        totalIncomes[year - 2018] += interestDetail.getIncomeAccount(); // 해당 연도의 소득 합산
-
-                        // income_detail에 추가
+                        // Set financialIncomeId before checking existence
                         interestDetail.setFinancialIncomeId(financialIncomeId); // ID 설정
-                        incomeDetailMapper.insertIncomeDetail(interestDetail);
+                        System.out.println(financialIncomeId);
+                        if (!incomeDetailExists(interestDetail)) { // 소득이 없을 때만 삽입
+                            // 소득 합산
+                            totalIncomes[year - 2018] += interestDetail.getIncomeAccount(); // 해당 연도의 소득 합산
+
+                            // income_detail에 추가
+                            incomeDetailMapper.insertIncomeDetail(interestDetail);
+                        }
                     }
                 }
 
@@ -127,11 +130,16 @@ public class MyDataService {
                     Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
 
                     if (financialIncomeId != null) {
-                        // 소득 합산
-                        totalIncomes[year - 2018] += dividendDetail.getIncomeAccount();
-
+                        // Set financialIncomeId before checking existence
                         dividendDetail.setFinancialIncomeId(financialIncomeId); // ID 설정
-                        incomeDetailMapper.insertIncomeDetail(dividendDetail);
+
+                        if (!incomeDetailExists(dividendDetail)) { // 소득이 없을 때만 삽입
+                            // 소득 합산
+                            totalIncomes[year - 2018] += dividendDetail.getIncomeAccount();
+
+                            // income_detail에 추가
+                            incomeDetailMapper.insertIncomeDetail(dividendDetail);
+                        }
                     }
                 }
             }
@@ -148,6 +156,19 @@ public class MyDataService {
         }
     }
 
+    private boolean incomeDetailExists(IncomeDetailDto incomeDetailDto) {
+        System.out.println("Checking income detail exists with parameters:");
+        System.out.println("financialIncomeId: " + incomeDetailDto.getFinancialIncomeId());
+        System.out.println("incomeType: " + incomeDetailDto.getIncomeType());
+        System.out.println("accountNumber: " + incomeDetailDto.getAccountNumber());
+        System.out.println("incomeDate: " + incomeDetailDto.getIncomeDate());
+        return incomeDetailMapper.findIncomeDetail(
+                incomeDetailDto.getFinancialIncomeId(),
+                incomeDetailDto.getIncomeType(),
+                incomeDetailDto.getAccountNumber(),
+                incomeDetailDto.getIncomeDate()
+        ) != null;
+    }
     private Integer getFinancialIncomeIdByYear(int year) {
         switch (year) {
             case 2018:
@@ -172,6 +193,9 @@ public class MyDataService {
     private IncomeDetailDto extractInterestIncome(Map<String, Object> asset) {
         String accountNumber = (String) asset.get("accountNo");
         Integer institutionCode = (Integer) asset.get("bankCode");
+        if (institutionCode == null) {
+            institutionCode = 0;
+        }
 
         String interestDateStr = (String) asset.get("interestDate");
         Date interestDate = parseDate(interestDateStr);
@@ -200,6 +224,9 @@ public class MyDataService {
     private IncomeDetailDto extractDividendIncome(Map<String, Object> asset) {
         String accountNumber = (String) asset.get("accountNo");
         Integer institutionCode = (Integer) asset.getOrDefault("bankCode", asset.get("investCode"));
+        if (institutionCode == null) {
+            institutionCode = 0;
+        }
 
         String dividendDateStr = (String) asset.get("dividendDate");
         Date dividendDate = parseDate(dividendDateStr);

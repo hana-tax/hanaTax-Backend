@@ -9,9 +9,9 @@ import lombok.*;
 @Setter
 public class IncomeDetailDto {
     private Integer financialIncomeId;
-    private int incomeType;
+    private Integer incomeType;
     private String accountNumber;
-    private int institutionName;
+    private Integer institutionName;
     private double incomeAccount;
     private double incomeTax;
     private double localTax;
