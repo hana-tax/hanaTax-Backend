@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // 특정 출처로 변경
+                .allowedOrigins("http://54.206.220.238") // 특정 출처로 변경
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
