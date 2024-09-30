@@ -14,7 +14,7 @@ TIME_NOW=$(date +%c)
 
 # 이전 실행 중인 애플리케이션 종료
 echo "$TIME_NOW > 기존 실행 중인 애플리케이션 종료 시도" >> $DEPLOY_LOG
-CURRENT_PID=$(pgrep -f $JAR_FILE)
+CURRENT_PID=$(pgrep -f 'java -jar $JAR_FILE')
 
 if [ -z "$CURRENT_PID" ]; then
     echo "$TIME_NOW > 현재 실행 중인 애플리케이션이 없습니다." >> $DEPLOY_LOG
@@ -25,13 +25,18 @@ else
 fi
 
 # 새로운 빌드 파일 복사
-echo "$TIME_NOW > 새로운 빌드 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/hanaTax-0.0.1-SNAPSHOT.jar $JAR_FILE
+if [ -f $PROJECT_ROOT/build/libs/hanaTax-0.0.1-SNAPSHOT.jar ]; then
+    echo "$TIME_NOW > 새로운 빌드 파일 복사" >> $DEPLOY_LOG
+    cp $PROJECT_ROOT/build/libs/hanaTax-0.0.1-SNAPSHOT.jar $JAR_FILE
+else
+    echo "$TIME_NOW > 빌드 파일을 찾을 수 없습니다: $PROJECT_ROOT/build/libs/hanaTax-0.0.1-SNAPSHOT.jar" >> $DEPLOY_LOG
+    exit 1
+fi
 
 # 새로운 애플리케이션 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
 nohup java -jar $JAR_FILE > $APP_LOG 2> $ERROR_LOG &
 
 # 실행된 애플리케이션 PID 확인
-CURRENT_PID=$(pgrep -f $JAR_FILE)
+CURRENT_PID=$(pgrep -f 'java -jar $JAR_FILE')
 echo "$TIME_NOW > 새로 실행된 프로세스 아이디 $CURRENT_PID 입니다." >> $DEPLOY_LOG
