@@ -2,6 +2,8 @@ package com.example.demo.domain.mydata.dto;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,5 +17,5 @@ public class IncomeDetailDto {
     private double incomeAccount;
     private double incomeTax;
     private double localTax;
-    private String incomeDate;
+    private Date incomeDate;
 }
