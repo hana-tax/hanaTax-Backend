@@ -17,20 +17,24 @@ import java.util.List;
 
 @Service
 public class NotificationService {
-    @Autowired
-    private FinancialIncomeMapper financialIncomeMapper;
+    private final FinancialIncomeMapper financialIncomeMapper;
+    private final UserMapper userMapper;
+    private final EmailService emailService;
+    private final SmsService smsService;
+    private final OverTaxAlertMapper overTaxAlertMapper;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private SmsService smsService;
-
-    @Autowired
-    private OverTaxAlertMapper overTaxAlertMapper;
+    public NotificationService(FinancialIncomeMapper financialIncomeMapper,
+                               UserMapper userMapper,
+                               EmailService emailService,
+                               SmsService smsService,
+                               OverTaxAlertMapper overTaxAlertMapper) {
+        this.financialIncomeMapper = financialIncomeMapper;
+        this.userMapper = userMapper;
+        this.emailService = emailService;
+        this.smsService = smsService;
+        this.overTaxAlertMapper = overTaxAlertMapper;
+    }
 
 //        @Scheduled(cron = "0 */1 * * * ?") // 매 1분마다 실행
     @Scheduled(cron = "0 9 * * * ?") // 매일 오전 9시
