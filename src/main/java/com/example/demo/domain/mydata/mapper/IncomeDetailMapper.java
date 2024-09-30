@@ -17,7 +17,7 @@ public interface IncomeDetailMapper {
     @Select("SELECT * FROM INCOME_DETAIL WHERE financialIncomeId = #{financialIncomeId} " +
             "AND incomeType = #{incomeType} " +
             "AND accountNumber = #{accountNumber} " +
-            "AND incomeDate = TO_DATE(#{incomeDate}, 'YYYY-MM-DD')")
+            "AND incomeDate = #{incomeDate}")
     IncomeDetailDto findIncomeDetail(@Param("financialIncomeId") Integer financialIncomeId,
                                      @Param("incomeType") Integer incomeType,
                                      @Param("accountNumber") String accountNumber,
