@@ -26,7 +26,7 @@ fi
 
 # 새로운 빌드 파일 복사
 echo "$TIME_NOW > 새로운 빌드 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
+cp $PROJECT_ROOT/build/libs/hanaTax-0.0.1-SNAPSHOT.jar $JAR_FILE
 
 # 새로운 애플리케이션 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
