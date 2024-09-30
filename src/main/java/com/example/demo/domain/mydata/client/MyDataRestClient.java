@@ -23,7 +23,7 @@ public class MyDataRestClient {
     // 마이데이터 서버에 사용자 등록 요청
     public List<Object> enrollUserInMyData(String accessToken, MyDataEnrollmentRequest request) {
         // 마이데이터 서버 URL
-        String url = "http://localhost:8081/api/enroll";
+        String url = "http://52.62.204.212:8081/api/enroll";
 
         // 헤더 설정: Authorization에 토큰 추가
         HttpHeaders headers = new HttpHeaders();
