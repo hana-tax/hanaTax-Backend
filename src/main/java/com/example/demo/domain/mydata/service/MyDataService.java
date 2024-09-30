@@ -10,6 +10,7 @@ import com.example.demo.domain.mydata.mapper.UserCiMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import java.util.Calendar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -106,7 +107,9 @@ public class MyDataService {
                 // 이자 소득 처리
                 IncomeDetailDto interestDetail = extractInterestIncome(assetMap);
                 if (interestDetail != null) {
-                    int year = Integer.parseInt(interestDetail.getIncomeDate().substring(0, 4)); // 연도 추출
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(interestDetail.getIncomeDate());
+                    int year = calendar.get(Calendar.YEAR);
                     Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
 
                     if (financialIncomeId != null) {
@@ -126,7 +129,9 @@ public class MyDataService {
                 // 배당 소득 처리
                 IncomeDetailDto dividendDetail = extractDividendIncome(assetMap);
                 if (dividendDetail != null) {
-                    int year = Integer.parseInt(dividendDetail.getIncomeDate().substring(0, 4)); // 연도 추출
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(dividendDetail.getIncomeDate());
+                    int year = calendar.get(Calendar.YEAR);
                     Integer financialIncomeId = getFinancialIncomeIdByYear(year); // 연도에 해당하는 ID 가져오기
 
                     if (financialIncomeId != null) {
@@ -203,7 +208,7 @@ public class MyDataService {
         // 날짜가 유효하고 이자 소득이 0보다 큰 경우
         Double interestIncome = (Double) asset.get("interestAmount");
         if (interestIncome != null && interestIncome > 0) {
-            String formattedIncomeDate = formatDateToDatabaseFormat(interestDate);
+
             double incomeTax = Math.floor(interestIncome * 0.14); // 소득세 절삭
             double localTax = Math.floor(incomeTax * 0.014); // 지방세 절삭
 
@@ -215,7 +220,7 @@ public class MyDataService {
                     .incomeAccount(interestIncome)
                     .incomeTax(incomeTax)
                     .localTax(localTax)
-                    .incomeDate(formattedIncomeDate)
+                    .incomeDate(interestDate)
                     .build();
         }
         return null;  // 이자 소득이 없으면 null 반환
@@ -234,7 +239,7 @@ public class MyDataService {
         // 날짜가 유효하고 배당 소득이 0보다 큰 경우
         Double dividendIncome = (Double) asset.get("dividendAmount");
         if (dividendIncome != null && dividendIncome > 0) {
-            String formattedIncomeDate = formatDateToDatabaseFormat(dividendDate);
+
             double incomeTax = Math.floor(dividendIncome * 0.14); // 소득세 절삭
             double localTax = Math.floor(incomeTax * 0.014); // 지방세 절삭
 
@@ -246,7 +251,7 @@ public class MyDataService {
                     .incomeAccount(dividendIncome)
                     .incomeTax(incomeTax)
                     .localTax(localTax)
-                    .incomeDate(formattedIncomeDate)
+                    .incomeDate(dividendDate)
                     .build();
         }
         return null;  // 배당 소득이 없으면 null 반환
